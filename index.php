@@ -10,8 +10,7 @@ session_abort();
     <!DOCTYPE html>
     <html lang="fa">
     <head>
-        <title>ورود به سامانه جشنواره مقالات علمی حوزه</title>
-        <link rel="icon" type="image/x-icon" href="/dist/img/favicon.ico">
+        <title>ورود به سامانه معاونت پژوهش امور استان ها</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!--===============================================================================================-->
@@ -39,7 +38,7 @@ session_abort();
                     <!--					<span class="login100-form-title p-b-26">-->
                     <center>
                         <p style=" font-family: 'B Titr'; font-size: 20px; color: black">
-                            صفحه ورود به سامانه جشنواره مقالات علمی حوزه
+                            صفحه ورود به سامانه معاونت پژوهش امور استان ها
                         </p>
                     </center>
                     <br/>
@@ -123,7 +122,7 @@ session_abort();
 if (isset($_GET['error'])):
     ?>
     <script>
-        alert("مشکلی در ورود شما به سیستم وجود دارد. لطفا با کارشناس سامانه جشنواره تماس حاصل فرمایید.");
+        alert("مشکلی در ورود شما به سیستم وجود دارد. لطفا با کارشناس سامانه تماس حاصل فرمایید.");
 
     </script>
 <?php endif; ?>

@@ -9,7 +9,7 @@ function last_festival_id($connection_maghalat){
 
 // used in panel.php
 function showlastseentimeonnavbar($connection,$user){
-    $showlastlogindatequery=mysqli_query($connection,"select * from log_helli where username='$user' and logout_year is not null");
+    $showlastlogindatequery=mysqli_query($connection,"select * from log_provincial_affairs where username='$user' and logout_year is not null");
     foreach ($showlastlogindatequery as $showlastlogindate){}
     echo @$showlastlogindate['login_year']."/".@$showlastlogindate['login_month']."/".@$showlastlogindate['login_day'].' '.@$showlastlogindate['login_hour'].":".@$showlastlogindate['login_minute'];
 }

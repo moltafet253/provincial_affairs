@@ -5,11 +5,11 @@ session_start();
 $urlofthispage=$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
 if (!isset($_SESSION['islogin'])){
     $operation="Access Denied";
-    logsend($operation,$urlofthispage,$connection_maghalat);
+//    logsend($operation,$urlofthispage,$connection);
     header("location: index.php?errorlog");
 }
 @$user=$_SESSION['id'];
-$query=mysqli_query($connection_maghalat,"select * from users where id='$user'");
+$query=mysqli_query($connection,"select * from users where id='$user'");
 foreach ($query as $User_Info){}
 ?>
 <!DOCTYPE html>
@@ -19,7 +19,7 @@ foreach ($query as $User_Info){}
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-    <title>سامانه جشنواره مقالات علمی حوزه</title>
+    <title>سامانه معاونت پژوهش امور استان ها</title>
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="plugins/font-awesome/css/font-awesome.min.css">
@@ -70,7 +70,7 @@ foreach ($query as $User_Info){}
         <!-- Brand Logo -->
         <a href="index.php" class="brand-link">
             <center>
-                <span class="brand-text font-weight-bold">سامانه جشنواره مقالات علمی حوزه</span>
+                <span class="brand-text font-weight-bold">سامانه معاونت پژوهش امور استان ها</span>
             </center>
         </a>
 

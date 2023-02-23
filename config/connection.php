@@ -4,7 +4,7 @@ include_once 'GDate.php';
 //include_once 'PHPExcel/Classes/PHPExcel.php';
 //ini_set('session.gc_maxlifetime', 36000);
 date_default_timezone_set("Asia/Tehran");
-$main_url="https://localhost/Jmaghalat/";
+$main_url="https://localhost/provincial_affairs/";
 $year=jdate('Y');
 $month=jdate('n');
 $day=jdate('j');
@@ -14,24 +14,12 @@ $sec=jdate('s');
 $date=$year."/".$month."/".$day;
 $datewithtime=$year."/".$month."/".$day.' '.$hour.":".$min.":".$sec;
 
-$connection_maghalat = @mysqli_connect('localhost', 'root', '', 'jashnvareh_maghalat');
+$connection = @mysqli_connect('localhost', 'root', '', 'provincial_affairs');
 if (mysqli_connect_errno()) {
     echo 'ارتباط با دیتابیس دچار اختلال شده است. خطا به این صورت میباشد:' . mysqli_connect_error();
     exit();
 }
-$connection_mag = @mysqli_connect('localhost', 'root', '', 'mag_base');
-if (mysqli_connect_errno()) {
-    echo 'ارتباط با دیتابیس دچار اختلال شده است. خطا به این صورت میباشد:' . mysqli_connect_error();
-    exit();
-}
-$connection_variables = @mysqli_connect('localhost', 'root', '', 'variables');
-if (mysqli_connect_errno()) {
-    echo 'ارتباط با دیتابیس دچار اختلال شده است. خطا به این صورت میباشد:' . mysqli_connect_error();
-    exit();
-}
-mysqli_set_charset($connection_maghalat, 'utf8');
-mysqli_set_charset($connection_mag, 'utf8');
-mysqli_set_charset($connection_variables, 'utf8');
+mysqli_set_charset($connection, 'utf8');
 
 
 //$conn = "";

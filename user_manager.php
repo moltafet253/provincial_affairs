@@ -1,5 +1,4 @@
-<?php include_once __DIR__ . '/header.php'; ?>
-<?php
+<?php include_once __DIR__ . '/header.php';
 if (isset($_GET['UserFounded'])):
     ?>
     <div class="card card-danger">
@@ -31,7 +30,7 @@ elseif (isset($_GET['UserAdded'])):
         </div>
         <!-- /.card-header -->
         <!-- form start -->
-        <form role="form" method="post" action="build/php/inc/Add_User.php">
+        <form role="form" method="post" action="build/php/inc/Add_User.php" id="Add_User">
             <div class="card-body">
                 <center>
                     <table style="width: 80%" class="table table-bordered">
@@ -73,11 +72,67 @@ elseif (isset($_GET['UserAdded'])):
                         <tr>
                             <th>جنسیت*</th>
                             <td>
-                                <select class="form-control" id="gender" name="gender">
+                                <select style="width: 100%;text-align: right" class="form-control select2" id="gender" name="gender">
                                     <option selected disabled>انتخاب کنید</option>
                                     <option>مرد</option>
                                     <option>زن</option>
                                 </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>نوع کاربری*</th>
+                            <td>
+                                <select class="form-control select2" data-placeholder="" onchange="ShowTr();"
+                                        style="width: 100%;text-align: right" name="type" id="type">
+                                    <option selected disabled>انتخاب کنید</option>
+                                    <option value="1">معاون واحد پژوهشی</option>
+                                    <option value="2">معاون استان</option>
+                                    <option value="3">مدیر ستاد</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr style="display: none" id="statetr">
+                            <th>استان*</th>
+                            <td>
+                                <select class="form-control select2" data-placeholder="" onchange="cityshow(this.value)"
+                                        style="width: 100%;text-align: right" name="state" id="state">
+                                    <option selected disabled>انتخاب کنید</option>
+                                    <?php
+                                    $query=mysqli_query($connection,"select * from state");
+                                    foreach ($query as $state):
+                                    ?>
+                                    <option value="<?php echo $state['id']; ?>"><?php echo $state['name']; ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </td>
+                        </tr>
+                        <script>
+                            function cityshow(str) {
+                                var type=document.getElementById('type').value;
+                                if (type==1){
+                                    var xmlhttp=new XMLHttpRequest();
+                                    xmlhttp.onreadystatechange=function() {
+                                        if (this.readyState==4 && this.status==200) {
+                                            document.getElementById("city").innerHTML=this.responseText;
+                                            document.getElementById("citytr").style.display='';
+                                        }
+                                    }
+                                    xmlhttp.open("GET","build/ajax/showcity.php?state="+str,true);
+                                    xmlhttp.send();
+                                }
+                            }
+                        </script>
+                        <tr style="display: none" id="citytr">
+                            <th>شهرستان*</th>
+                            <td>
+                                <select class="form-control select2" name="city" id="city" style="width: 250px;text-align: right"> </select>
+                            </td>
+                        </tr>
+                        <tr style="display: none" id="unittr">
+                            <th>نام واحد*</th>
+                            <td>
+                                <input type="text" class="form-control" id="unit"
+                                       placeholder="نام واحد را وارد کنید" name="unit">
                             </td>
                         </tr>
                         <tr>
@@ -87,75 +142,6 @@ elseif (isset($_GET['UserAdded'])):
                                           name="address"></textarea>
                             </td>
                         </tr>
-                        <tr>
-                            <th>نام بانک</th>
-                            <td>
-                                <select class="form-control select2" data-placeholder=""
-                                        style="width: 100%;text-align: right" name="bank_name" id="bank_name">
-                                    <option disabled selected>انتخاب کنید</option>
-                                    <?php
-                                    $query = mysqli_query($connection_maghalat, 'select * from bank_list order by name asc');
-                                    foreach ($query as $bank_items):
-                                        ?>
-                                        <option value="<?php echo $bank_items['name'] ?>"><?php echo $bank_items['name']; ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>شماره حساب</th>
-                            <td>
-                                <input type="text" class="form-control" id="bank_id"
-                                       placeholder="شماره حساب را وارد کنید" name="bank_id">
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>شماره کارت بانکی 16 رقمی</th>
-                            <td>
-                                <input type="text" class="form-control" id="debit_card_id"
-                                       placeholder="شماره کارت بانکی 16 رقمی را وارد کنید" name="debit_card_id">
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>شماره شبا 24 رقمی</th>
-                            <td>
-                                <input type="text" class="form-control" id="shaba"
-                                       placeholder="شماره شبا 24 رقمی را وارد کنید" name="shaba">
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>نوع کاربری*</th>
-                            <td>
-                                <select class="form-control select2" data-placeholder=""
-                                        style="width: 100%;text-align: right" name="type" id="type">
-                                    <option value="1">ارزیاب</option>
-                                    <option value="2">سرگروه</option>
-                                    <option value="3">کارشناس</option>
-                                    <option value="4">مدیر</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                گروه علمی*
-                                <br><br>
-                                با گرفتن کلید کنترل می توانید چند گزینه را انتخاب نمایید.
-                            </th>
-                            <td>
-                                <select class="form-control select2" multiple="multiple"
-                                        data-placeholder="یک استان انتخاب کنید"
-                                        style="width: 100%;text-align: right" name="scientific_group[]"
-                                        id="scientific_group">
-                                    <?php
-                                    $query = mysqli_query($connection_maghalat, 'select * from scientific_group order by name asc');
-                                    foreach ($query as $group_items):
-                                        ?>
-                                        <option value="<?php echo $group_items['name'] ?>"><?php echo $group_items['name']; ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </td>
-                        </tr>
-
                     </table>
                 </center>
 
@@ -191,17 +177,17 @@ elseif (isset($_GET['UserAdded'])):
                             <th>ردیف</th>
                             <th>کاربر</th>
                             <th>مشخصات</th>
-                            <th>گروه علمی</th>
+                            <th>استان</th>
+                            <th>شهرستان</th>
+                            <th>واحد آموزشی</th>
                             <th>شماره همراه</th>
-                            <th>بانک</th>
-                            <th>حساب</th>
-                            <th>شماره کارت</th>
-                            <th>شماره شبا</th>
+                            <th>آدرس</th>
+                            <th>نوع کاربری</th>
                             <th>عملیات</th>
                         </tr>
                         <?php
                         $a = 1;
-                        $SelectAllUsers = mysqli_query($connection_maghalat, "select * from users order by family asc");
+                        $SelectAllUsers = mysqli_query($connection, "select * from users order by type desc,family asc");
                         foreach ($SelectAllUsers as $users):
                             ?>
                             <tr>
@@ -209,18 +195,20 @@ elseif (isset($_GET['UserAdded'])):
                                     $a++; ?></td>
                                 <td><?php echo $users['username']; ?></td>
                                 <td><?php echo $users['name'] . ' ' . $users['family'] ?></td>
+                                <td><?php echo $users['state'] ?></td>
+                                <td><?php echo $users['city'] ?></td>
+                                <td><?php echo $users['unit'] ?></td>
+                                <td><?php echo $users['phone'] ?></td>
+                                <td><?php echo $users['address'] ?></td>
                                 <td><?php
-                                    $groups = explode('||', $users['scientific_group']);
-                                    foreach ($groups as $itemgroups) {
-                                        echo '<label style="width: 180px">' . '*' . $itemgroups . '</label>' . '<br>';
+                                    if ($users['type'] == 1) {
+                                        echo 'معاونت پژوهش مدرسه';
+                                    } elseif ($users['type'] == 2) {
+                                        echo 'معاونت پژوهش استان';
+                                    } elseif ($users['type'] == 3) {
+                                        echo 'مدیر ستاد';
                                     }
                                     ?></td>
-                                <td><?php echo $users['phone'] ?></td>
-                                <td><?php echo $users['bank_name'] ?></td>
-                                <td><?php echo $users['bank_id'] ?></td>
-                                <td><?php echo $users['debit_card_id'] ?></td>
-                                <td><?php echo $users['shaba'] ?></td>
-                                <td></td>
                             </tr>
                         <?php endforeach; ?>
                     </table>
@@ -239,5 +227,6 @@ elseif (isset($_GET['UserAdded'])):
 <!-- /.content-wrapper -->
 
 <script src="build/js/SearchInUserManagerTable.js"></script>
+<script src="build/js/UserManagerIncs.js"></script>
 
 <?php include_once __DIR__ . '/footer.php'; ?>
