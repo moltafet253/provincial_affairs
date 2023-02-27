@@ -1,4 +1,5 @@
 <?php include_once __DIR__ . '/header.php';
+if ($_SESSION['head']==3):
 if (isset($_GET['UserFounded'])):
     ?>
     <div class="card card-danger">
@@ -160,16 +161,78 @@ elseif (isset($_GET['UserAdded'])):
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">نمایش و مدیریت کاربران (به ترتیب نام خانوادگی)</h3>
+                    <form method="post" id="SearchForm">
+                    <h3 class="card-title">نمایش و مدیریت کاربران
+                        <select class="form-control select2" data-placeholder=""
+                                style="width: 30%;text-align: right" name="Search_Type" id="Search_Type">
+                            <option selected disabled>نوع کاربر را انتخاب کنید</option>
+                            <option
+                            <?php
+                            if (@$_POST['Search_Type']=='ستاد'){
+                                echo 'selected';
+                            }
+                            ?>
+                            >ستاد</option>
+                            <option
+                                <?php
+                                if (@$_POST['Search_Type']=='استان'){
+                                    echo 'selected';
+                                }
+                                ?>
+                            >استان</option>
+                        </select>
+                        <select class="form-control" data-placeholder=""
+                                style="width: 30%;text-align: right;<?php
+                                if (@$_POST['Search_state']){
+                                    echo 'display: inline-block';
+                                }else{
+                                    echo 'display: none';
+                                }
+                                ?>" name="Search_state" id="Search_state">
+                            <option selected disabled>استان را انتخاب کنید</option>
+                            <?php
+                            $query=mysqli_query($connection,"select distinct(state) from users where state is not null and state!='' order by state asc");
+                            foreach ($query as $state):
+                                ?>
+                                <option <?php
+                                if (@$_POST['Search_state']==$state['state']){
+                                    echo 'selected';
+                                }
+                                ?> value="<?php echo $state['state']; ?>"><?php
+                                    $state=$state['state'];
+                                    $query=mysqli_query($connection,"select * from state where id='$state'");
+                                    foreach ($query as $stateinfo){}
+                                    echo @$stateinfo['name'];
+                                    ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <button type="submit" class="btn btn-block btn-success" style="display: inline-block" name="Search">جستجو</button>
+                    </h3>
+                    </form>
+                    <?php
+                    if (isset($_POST['Search'])):
+                    ?>
                     <br>
                     <div class="card-tools-user-manager">
-                        <!--                        <div class="input-group input-group-sm" style="width: 150px;">-->
                         <input type="search" name="table_search" class="form-control float-right"
                                placeholder="لطفا برای جستجو، نام و نام خانوادگی مورد نظر را تایپ نمایید"
                                onkeyup="myFunction()" id="myInput">
-                        <!--                        </div>-->
                     </div>
+                    <?php endif; ?>
                 </div>
+                <?php
+
+                if (@$_POST['Search_Type']=='ستاد'){
+                    $SelectUsers = mysqli_query($connection, "select * from users where state is null or state='' order by type desc,family asc");
+                }else{
+                    $state=@$_POST['Search_state'];
+                    $SelectUsers = mysqli_query($connection, "select * from users where state='$state' order by type desc,family asc");
+                }
+
+                foreach ($SelectUsers as $Items){}
+
+                if (isset($_POST['Search']) and @$Items!=null):
+                ?>
                 <!-- /.card-header -->
                 <div class="card-body table-responsive p-0">
                     <table class="table table-bordered table-striped" id="myTable">
@@ -187,7 +250,12 @@ elseif (isset($_GET['UserAdded'])):
                         </tr>
                         <?php
                         $a = 1;
-                        $SelectAllUsers = mysqli_query($connection, "select * from users order by type desc,family asc");
+                        if (@$_POST['Search_Type']=='ستاد'){
+                            $SelectAllUsers = mysqli_query($connection, "select * from users where state is null or state='' order by type desc,family asc");
+                        }else{
+                            $state=$_POST['Search_state'];
+                            $SelectAllUsers = mysqli_query($connection, "select * from users where state='$state' order by type desc,family asc");
+                        }
                         foreach ($SelectAllUsers as $users):
                             ?>
                             <tr>
@@ -195,7 +263,14 @@ elseif (isset($_GET['UserAdded'])):
                                     $a++; ?></td>
                                 <td><?php echo $users['username']; ?></td>
                                 <td><?php echo $users['name'] . ' ' . $users['family'] ?></td>
-                                <td><?php echo $users['state'] ?></td>
+                                <td>
+                                    <?php
+                                    $state=$_POST['Search_state'];
+                                    $query=mysqli_query($connection,"select * from state where id='$state'");
+                                    foreach ($query as $stateinfo){}
+                                    echo @$stateinfo['name'];
+                                    ?>
+                                </td>
                                 <td><?php echo $users['city'] ?></td>
                                 <td><?php echo $users['unit'] ?></td>
                                 <td><?php echo $users['phone'] ?></td>
@@ -214,6 +289,7 @@ elseif (isset($_GET['UserAdded'])):
                     </table>
                 </div>
                 <!-- /.card-body -->
+                <?php endif; ?>
             </div>
             <!-- /.card -->
         </div>
@@ -229,4 +305,4 @@ elseif (isset($_GET['UserAdded'])):
 <script src="build/js/SearchInUserManagerTable.js"></script>
 <script src="build/js/UserManagerIncs.js"></script>
 
-<?php include_once __DIR__ . '/footer.php'; ?>
+<?php endif; include_once __DIR__ . '/footer.php'; ?>

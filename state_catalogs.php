@@ -1,4 +1,6 @@
-<?php include_once __DIR__ . '/header.php'; ?>
+<?php include_once __DIR__ . '/header.php';
+if ($_SESSION['head']==3):
+?>
 <!-- Main content -->
 
 <?php
@@ -9,7 +11,7 @@ foreach ($query as $macros):
     <section class="content" id="<?php echo "section" . $macro_id; ?>">
         <div class="card card-primary collapsed-card">
             <div class="card-header">
-                <h4 class="card-title" style="font-size: 16px">
+                <h4 class="card-title">
                     <?php echo $macros['subject']; ?>
                 </h4>
                 <div class="card-tools">
@@ -27,7 +29,7 @@ foreach ($query as $macros):
                     ?>
                     <div class="card card-success collapsed-card">
                         <div class="card-header">
-                            <h4 class="card-title" style="font-size: 16px">
+                            <h4 class="card-title">
                                 <?php echo $wisdoms['subject']; ?>
                             </h4>
                             <div class="card-tools">
@@ -57,7 +59,7 @@ foreach ($query as $macros):
                                     ?>
                                     <tr>
                                         <td><?php echo $a;
-                                            $a; ?></td>
+                                            $a++; ?></td>
                                         <td><?php echo $gauges['subject']; ?></td>
                                         <td><?php echo $gauges['factor']; ?></td>
                                         <td>
@@ -65,63 +67,81 @@ foreach ($query as $macros):
                                             $status = explode("|", $gauges['status']);
                                             $count = count($status);
                                             for ($i = 0; $i < $count; $i++) {
-                                                echo $status[$i] . $i++ . ' => ' . $status[$i] . '<br>';
+                                                echo @$status[$i];
+                                                $i++;
+                                                echo ' => ' . @$status[$i] . '<br>';
                                             }
                                             ?>
                                         </td>
                                         <td>
-                                            <textarea disabled><?php echo $gauges['help']; ?></textarea>
+                                            <textarea style="height: 250px"
+                                                    onkeyup="ChangeHelpInfo(<?php echo $gauges['id']; ?>,this.value)"><?php echo $gauges['help']; ?></textarea>
                                         </td>
                                         <td>
-                                            <?php if ($gauges['repetable'] == 0) {
-                                                echo 'غیر فعال';
-                                            } elseif ($gauges['repetable'] == 1) {
-                                                echo 'فعال';
-                                            } ?>
+                                            <select class="form-control select2" data-placeholder=""
+                                                    style="width: 100%;text-align: right"
+                                                    onchange="ChangeRepetableStatus(<?php echo $gauges['id']; ?>,this.value)">
+                                                <option disabled selected>انتخاب کنید</option>
+                                                <option <?php if ($gauges['repetable'] == 0) {
+                                                    echo 'selected';
+                                                } ?> value="0">
+                                                    غیر فعال
+                                                </option>
+                                                <option <?php if ($gauges['repetable'] == 1) {
+                                                    echo 'selected';
+                                                } ?> value="1">
+                                                    فعال
+                                                </option>
+                                            </select>
                                         </td>
                                         <td>
-                                            <?php if ($gauges['active'] == 0) {
-                                                echo 'غیر فعال';
-                                            } elseif ($gauges['active'] == 1) {
-                                                echo 'فعال';
-                                            } ?>
+                                            <select class="form-control select2" data-placeholder=""
+                                                    style="width: 100%;text-align: right"
+                                                    onchange="ChangeActivationStatus(<?php echo $gauges['id']; ?>,this.value)">
+                                                <option disabled selected>انتخاب کنید</option>
+                                                <option <?php if ($gauges['active'] == 0) {
+                                                    echo 'selected';
+                                                } ?> value="0">
+                                                    غیر فعال
+                                                </option>
+                                                <option <?php if ($gauges['active'] == 1) {
+                                                    echo 'selected';
+                                                } ?> value="1">
+                                                    فعال
+                                                </option>
+                                            </select>
                                         </td>
 
                                     </tr>
                                 <?php
                                 endforeach;
-                                $a=null;
+                                $a = null;
                                 ?>
-                                <tr>
+                                <tr id="1">
                                     <td>جدید</td>
                                     <td>
                                         <input type="text" class="form-control"
-                                               id="subject<?php echo $wisdom_id ;
-                                               if (isset($a)){echo $a+1;}else{echo 1;}  ?>"
+                                               id="subject<?php echo $wisdom_id . '_1'; ?>"
                                                placeholder="عنوان سنجه را وارد کنید">
                                     </td>
                                     <td>
-                                        <input type="number" class="form-control"
-                                               id="factor<?php echo $wisdom_id ;
-                                               if (isset($a)){echo $a+1;}else{echo 1;} ?>"
-                                               placeholder="لطفا ضریب سنجه را وارد کنید">
+                                        <input type="number" class="form-control" title="لطفا ضریب سنجه را وارد کنید"
+                                               id="factor<?php echo $wisdom_id . '_1'; ?>"
+                                               placeholder="لطفا ضریب سنجه را وارد کنید" style="width: 100px">
                                     </td>
                                     <td>
-                                        <textarea id="status<?php echo $wisdom_id ;
-                                        if (isset($a)){echo $a+1;}else{echo 1;} ?>"
+                                        <textarea id="status<?php echo $wisdom_id . '_1'; ?>"
                                                   placeholder="لطفا مقادیر را با | از هم جدا کنید(دقت داشته باشید که به ترتیب زیاد به کم وارد شده و بین مقادیر فاصله نباشد). با این فرمت وارد شود: (نام امتیاز|مقدار ارزش) به عنوان مثال: عالی|5|خیلی خوب|4|خوب|3|ضعیف|2|خیلی ضعیف|1"
                                                   style="height: 250px;width: 200px"></textarea>
                                     </td>
                                     <td>
-                                        <textarea id="help<?php echo $wisdom_id ;
-                                        if (isset($a)){echo $a+1;}else{echo 1;} ?>"
+                                        <textarea id="help<?php echo $wisdom_id . '_1'; ?>"
                                                   style="height: 160px;width: 200px;"></textarea>
                                     </td>
                                     <td>
                                         <select class="form-control select2" data-placeholder=""
                                                 style="width: 100%;text-align: right"
-                                                id="repetable<?php echo $wisdom_id ;
-                                                if (isset($a)){echo $a+1;}else{echo 1;} ?>">
+                                                id="repetable<?php echo $wisdom_id . '_1'; ?>">
                                             <option disabled selected>انتخاب کنید</option>
                                             <option value="0">
                                                 غیر فعال
@@ -132,18 +152,7 @@ foreach ($query as $macros):
                                         </select>
                                     </td>
                                     <td>
-                                        <select class="form-control select2" data-placeholder=""
-                                                style="width: 100%;text-align: right"
-                                                id="active<?php echo $wisdom_id ;
-                                                if (isset($a)){echo $a+1;}else{echo 1;} ?>">
-                                            <option disabled selected>انتخاب کنید</option>
-                                            <option value="0">
-                                                غیر فعال
-                                            </option>
-                                            <option value="1">
-                                                فعال
-                                            </option>
-                                        </select>
+
                                     </td>
                                 </tr>
                             </table>
@@ -152,7 +161,7 @@ foreach ($query as $macros):
 
                                 <button class="btn btn-block btn-dark"
                                         onclick="Add_Gauge_Row(<?php echo $wisdom_id; ?>)">
-                                    + ذخیره و اضافه کردن
+                                    + ذخیره
                                 </button>
                             </center>
                         </div>
@@ -164,13 +173,13 @@ foreach ($query as $macros):
                 <!-- /.card -->
                 <div class="card card-warning">
                     <div class="card-header">
-                        <h4 class="card-title" style="font-size: 16px">
+                        <h4 class="card-title">
                             اضافه کردن شاخص خرد
                         </h4>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <form method="post" action="build/php/inc/Add_Wisdom_Index_Option.php">
+                        <form method="post" action="build/php/inc/Add_State_Wisdom_Index_Option.php">
                             <table class="table table-bordered table-striped" id="myTable">
                                 <tr>
                                     <th>ردیف</th>
@@ -226,7 +235,7 @@ endforeach;
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-            <form method="post" action="build/php/inc/Add_Macro_Index_Option.php">
+            <form method="post" action="build/php/inc/Add_State_Macro_Index_Option.php">
                 <table class="table table-bordered table-striped" id="myTable">
                     <tr>
                         <th>ردیف</th>
@@ -287,56 +296,88 @@ endforeach;
         }
 
     }
-</script>
-<script>
+
 
     function Add_Gauge_Row(Wisdom_id) {
-        var Rows_Lenght = document.getElementById("GaugeTable" + Wisdom_id).rows.length;
-        var lastChildID = Rows_Lenght;
+        var lastChildID = $("#GaugeTable" + Wisdom_id + " tr:last").attr('id');
+        lastChildID = parseInt(lastChildID);
 
-        var tableRow = document.getElementById("GaugeTable" + Wisdom_id);
-        var row = tableRow.insertRow(-1);
-        var cell1 = document.createElement("td");
-        var cell2 = document.createElement("td");
-        var cell3 = document.createElement("td");
-        var cell4 = document.createElement("td");
-        var cell5 = document.createElement("td");
-        var cell6 = document.createElement("td");
-        var cell7 = document.createElement("td");
-        cell1.innerHTML = "جدید";
-        cell2.innerHTML = "<input type='text' class='form-control' id=subject" + Wisdom_id + lastChildID + " placeholder='عنوان سنجه را وارد کنید'>";
-        cell3.innerHTML = "<input type='number' class='form-control' id=factor" + Wisdom_id + lastChildID + " placeholder='لطفا ضریب سنجه را وارد کنید'>";
-        cell4.innerHTML = "<textarea id=status" + Wisdom_id + lastChildID + " placeholder='لطفا مقادیر را با | از هم جدا کنید(دقت داشته باشید که به ترتیب زیاد به کم وارد شده و بین مقادیر فاصله نباشد). با این فرمت وارد شود: (نام امتیاز|مقدار ارزش) به عنوان مثال: عالی|5|خیلی خوب|4|خوب|3|ضعیف|2|خیلی ضعیف|1' style='height: 250px;width: 200px'></textarea>";
-        cell5.innerHTML = "<textarea id=help" + Wisdom_id + lastChildID + " style='height: 160px;width: 200px;'></textarea>";
-        cell6.innerHTML = "<select class='form-control select2' style='width: 100%;text-align: right' id=repetable" + Wisdom_id + lastChildID + "> <option disabled selected>انتخاب کنید</option> <option value='0'>غیر فعال </option><option value='1'>فعال</option></select>";
-        cell7.innerHTML = "<select class='form-control select2' style='width: 100%;text-align: right' id=active"+ Wisdom_id+ lastChildID + "> <option disabled selected>انتخاب کنید</option> <option value='0'>غیر فعال </option><option value='1'>فعال</option></select>";
-        row.appendChild(cell1);
-        row.appendChild(cell2);
-        row.appendChild(cell3);
-        row.appendChild(cell4);
-        row.appendChild(cell5);
-        row.appendChild(cell6);
-        row.appendChild(cell7);
-        tableRow.appendChild(row);
+        var subject = document.getElementById('subject' + Wisdom_id + "_" + lastChildID).value;
+        var factor = document.getElementById('factor' + Wisdom_id + "_" + lastChildID).value;
+        var status = document.getElementById('status' + Wisdom_id + "_" + lastChildID).value;
+        var help = document.getElementById('help' + Wisdom_id + "_" + lastChildID).value;
+        var repetable = document.getElementById('repetable' + Wisdom_id + "_" + lastChildID).value;
 
-        var pre=lastChildID-1;
-        // alert (Rows_Lenght);
-        // alert (lastChildID);
-        var subject = document.getElementById('subject' + Wisdom_id + pre).value;
-        var factor = document.getElementById('factor' + Wisdom_id + pre).value;
-        var status = document.getElementById('status' + Wisdom_id + pre).value;
-        var help = document.getElementById('help' + Wisdom_id + pre).value;
-        var repetable = document.getElementById('repetable' + Wisdom_id + pre).value;
-        var active = document.getElementById('active' + Wisdom_id + pre).value;
+        if (subject != '' && factor != '' && status != '' && help != '' && repetable != '') {
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                }
+            }
+            xmlhttp.open("GET", "build/ajax/New_Gauge.php?Wisdom_id=" + Wisdom_id + "&subject=" + subject + "&factor=" + factor + "&status=" + status + "&help=" + help + "&repetable=" + repetable, true);
+            xmlhttp.send();
+            lastChildID++;
+            var tableRow = document.getElementById("GaugeTable" + Wisdom_id);
+            var row = tableRow.insertRow(-1);
+            var cell1 = document.createElement("td");
+            var cell2 = document.createElement("td");
+            var cell3 = document.createElement("td");
+            var cell4 = document.createElement("td");
+            var cell5 = document.createElement("td");
+            var cell6 = document.createElement("td");
+            var cell7 = document.createElement("td");
+            cell1.innerHTML = "جدید";
+            cell2.innerHTML = "<input type='text' class='form-control' id=subject" + Wisdom_id + "_" + lastChildID + " placeholder='عنوان سنجه را وارد کنید'>";
+            cell3.innerHTML = "<input type='number' class='form-control' id=factor" + Wisdom_id + "_" + lastChildID + " placeholder='لطفا ضریب سنجه را وارد کنید' title='لطفا ضریب سنجه را وارد کنید' style='width: 100px'>";
+            cell4.innerHTML = "<textarea id=status" + Wisdom_id + "_" + lastChildID + " placeholder='لطفا مقادیر را با | از هم جدا کنید(دقت داشته باشید که به ترتیب زیاد به کم وارد شده و بین مقادیر فاصله نباشد). با این فرمت وارد شود: (نام امتیاز|مقدار ارزش) به عنوان مثال: عالی|5|خیلی خوب|4|خوب|3|ضعیف|2|خیلی ضعیف|1' style='height: 250px;width: 200px'></textarea>";
+            cell5.innerHTML = "<textarea id=help" + Wisdom_id + "_" + lastChildID + " style='height: 160px;width: 200px;'></textarea>";
+            cell6.innerHTML = "<select class='form-control select2' style='width: 100%;text-align: right' id=repetable" + Wisdom_id + "_" + lastChildID + "> <option disabled selected>انتخاب کنید</option> <option value='0'>غیر فعال </option><option value='1'>فعال</option></select>";
+            row.appendChild(cell1);
+            row.appendChild(cell2);
+            row.appendChild(cell3);
+            row.appendChild(cell4);
+            row.appendChild(cell5);
+            row.appendChild(cell6);
+            row.appendChild(cell7);
+            row.id = lastChildID;
+            tableRow.appendChild(row);
+        } else {
+            alert('لطفا مقادیر ورودی را چک کنید');
+        }
 
-        // var xmlhttp = new XMLHttpRequest();
-        // xmlhttp.onreadystatechange = function () {
-        //     if (this.readyState == 4 && this.status == 200) {
-        //     }
-        // }
-        // xmlhttp.open("GET", "build/ajax/New_Gauge.php?Wisdom_id=" + Wisdom_id + "&subject=" + subject + "&factor=" + factor + "&status=" + status + "&help=" + help + "&repetable=" + repetable + "&active=" + active, true);
-        // xmlhttp.send();
+
     }
 
+    function ChangeActivationStatus(Gauge_id, status) {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+            }
+        }
+        xmlhttp.open("GET", "build/ajax/Change_Gauge_Activation_Status.php?Gauge_id=" + Gauge_id + "&Value=" + status, true);
+        xmlhttp.send();
+    }
+
+    function ChangeRepetableStatus(Gauge_id, status) {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+            }
+        }
+        xmlhttp.open("GET", "build/ajax/Change_Gauge_Repetable_Status.php?Gauge_id=" + Gauge_id + "&Value=" + status, true);
+        xmlhttp.send();
+    }
+
+    function ChangeHelpInfo(Gauge_id, Help) {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+            }
+        }
+        xmlhttp.open("GET", "build/ajax/Change_Help_Info.php?Gauge_id=" + Gauge_id + "&Value=" + Help, true);
+        xmlhttp.send();
+    }
 </script>
-<?php include_once __DIR__ . '/footer.php'; ?>
+<?php
+endif;
+include_once __DIR__ . '/footer.php'; ?>

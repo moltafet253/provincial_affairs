@@ -15,6 +15,28 @@ function ShowTr() {
     }
 }
 
+document.getElementById("Search_Type").onchange = function ShowStateSelect() {
+    if (document.getElementById("Search_Type").value == 'استان') {
+        document.getElementById("Search_state").style.display = 'inline-block';
+    } else {
+        document.getElementById("Search_state").style.display = 'none';
+    }
+
+}
+
+document.getElementById("SearchForm").onsubmit = function CheckSearchFields() {
+    if (document.getElementById("Search_Type").value == 'استان' && document.getElementById("Search_state").value == 'استان را انتخاب کنید') {
+        alert('استان را انتخاب کنید');
+        return false;
+    } else if (document.getElementById("Search_Type").value == 'نوع کاربر را انتخاب کنید') {
+        alert('نوع کاربر را انتخاب کنید');
+        return false;
+    } else {
+        return true;
+    }
+
+}
+
 document.getElementById("Add_User").onsubmit = function CheckForm() {
     var username = document.getElementById("username");
     var password = document.getElementById("password");

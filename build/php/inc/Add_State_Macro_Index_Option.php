@@ -8,7 +8,7 @@ if (isset($_POST['add_macro']) and !empty($_POST['macro_subject'])) {
     $active = $_POST['active'];
     $registrar = $_SESSION['id'];
 
-    $QueryForCheckSubjectExists = mysqli_query($connection, "select * from macro_index_options where subject='$macro_subject'");
+    $QueryForCheckSubjectExists = mysqli_query($connection, "select * from macro_index_options where subject='$macro_subject' and status=1");
     foreach ($QueryForCheckSubjectExists as $item) {
     }
     if (!empty($item)) {
